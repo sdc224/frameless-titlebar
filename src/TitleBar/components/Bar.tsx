@@ -1,5 +1,5 @@
-import React from 'react';
-import electron from 'electron';
+import * as React from 'react';
+import * as electron from 'electron';
 
 const styles = {
   Bar: {
@@ -12,18 +12,28 @@ const styles = {
     userSelect: 'none',
     alignItems: 'center',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif'
-  }
+  } as any
 };
 
 const currentWindow = electron.remote.getCurrentWindow();
 
-class Bar extends React.Component {
-  constructor(props) {
+type Props = {
+  theme?: any,
+  isWin?: boolean,
+  inActive?: any
+}
+
+class Bar extends React.Component<Props> {
+  static defaultProps = {
+    isWin: false
+  }
+
+  constructor(props: Props) {
     super(props);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
   }
 
-  handleDoubleClick(e) {
+  handleDoubleClick(e: any) {
     let winRect = currentWindow.getBounds();
     let { workArea } = electron.screen.getDisplayNearestPoint({ x: winRect.x, y: winRect.y });
     currentWindow.setBounds(workArea, true);
@@ -46,10 +56,6 @@ class Bar extends React.Component {
       </div>
     );
   }
-}
-
-Bar.defaultProps = {
-  isWin: false
 }
 
 export default Bar;

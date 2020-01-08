@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 
 const styles = {
   Container: {
@@ -6,20 +6,20 @@ const styles = {
     outline: 'none',
     border: 'none',
     zIndex: 2000,
-  },
+  } as any,
   ScrollView: {
     overflow: 'hidden',
-  },
+  } as any,
   Menu: {
     overflow: 'hidden',
-  },
+  } as any,
   Vertical: {
     padding: '5px 0',
     marginLeft: 0,
     overflow: 'visible',
     textAlign: 'left',
     whiteSpace: 'nowrap',
-  },
+  } as any,
   Items: {
     tabIndex: 0,
     display: 'block',
@@ -28,12 +28,26 @@ const styles = {
     width: '100%',
     justifyContent: 'flex-end',
     listStyleType: 'none',
-  }
+  } as any
 }
 
-class MenuListContainer extends Component {
-  
-  constructor(props) {
+type Props = {
+  theme: any;
+  parentRef?: any,
+  rect: any,
+  submenu?: any
+}
+
+type State = {
+  activeDescendant: any;
+  top: number;
+  left: number;
+}
+
+class MenuListContainer extends React.Component<Props, State> {
+  private itemRef: any;
+  private contentRef: any;
+  constructor(props: Props) {
     super(props);
     this.state = {
       activeDescendant: null,
@@ -45,7 +59,7 @@ class MenuListContainer extends Component {
     this.setContent = this.setContent.bind(this);
     this.onLayout = this.onLayout.bind(this);
   }
-  
+
   componentDidMount() {
     if (this.state.activeDescendant) {
       return;
@@ -65,7 +79,7 @@ class MenuListContainer extends Component {
     let left = rect.left;
 
     if (submenu) {
-      let parentRect = parentRef.getBoundingClientRect();    
+      let parentRect = parentRef.getBoundingClientRect();
       // scroll view > scroll content > ul > li > this
       var scrollTop = parentRef.parentNode.parentNode.parentNode.scrollTop; // get parent menu's scroll offset
       top = parentRef.offsetTop - scrollTop;
@@ -96,7 +110,7 @@ class MenuListContainer extends Component {
 
   focusFirstItem = () => {
     this.setState({
-      activeDescendant: this.props.children[0]
+      activeDescendant: this.props.children![0]
     });
   };
 

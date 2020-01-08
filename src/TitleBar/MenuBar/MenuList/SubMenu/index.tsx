@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import MenuItem from '../MenuItem';
-import { defaultMenuItem } from '../../../utils';
-import MenuListContainer from '../MenuListContainer';
+import * as React from 'react';
+import MenuItem from '../MenuItem/index';
+import { defaultMenuItem } from '../../../utils/index';
+import MenuListContainer from '../MenuListContainer/index';
 
 export const SubMenuLabelStyle = {
   height: '20px',
@@ -16,10 +15,31 @@ export const SubMenuLabelStyle = {
   fontSize: '1em',
   textAlign: 'left',
   cursor: 'default',
-};
+} as any;
 
-class SubMenu extends Component {
-  constructor(props) {
+type Props = {
+  theme: any,
+  menuRef: any,
+  changeCheckState: any,
+  path: any,
+  menuItem: any;
+  menu?: any;
+  level: number,
+  renderSide: string,
+  parentRect?: any
+}
+
+class SubMenu extends React.Component<Props> {
+  private itemRef: any;
+
+  static defaultProps = {
+    menuItem: {},
+    level: 1,
+    renderSide: 'right',
+    changeCheckState: () => { }
+  }
+
+  constructor(props: Props) {
     super(props);
     this._generateMenu = this._generateMenu.bind(this);
     this.setRef = this.setRef.bind(this);
@@ -29,7 +49,7 @@ class SubMenu extends Component {
     this.itemRef = ref;
   }
 
-  _generateMenu(menu = []) {
+  _generateMenu(menu: any = []) {
     const { theme } = this.props;
     return menu.map((menuItem, i) => {
       if (menuItem.submenu) {
@@ -98,19 +118,5 @@ class SubMenu extends Component {
     );
   }
 }
-
-SubMenu.propTypes = {
-  menuItem: PropTypes.object,
-  level: PropTypes.number,
-  renderSide: PropTypes.string,
-  changeCheckState: PropTypes.func
-};
-
-SubMenu.defaultProps = {
-  menuItem: {},
-  level: 1,
-  renderSide: 'right',
-  changeCheckState: () => {}
-};
 
 export default SubMenu;

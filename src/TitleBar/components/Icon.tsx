@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 
 const styles = {
   Icon: {
@@ -9,7 +8,13 @@ const styles = {
   }
 };
 
-class Icon extends React.Component {
+type Props = {
+  src: string,
+  onIconClick?: () => void,
+  notWin?: any
+}
+
+class Icon extends React.Component<Props> {
   render() {
     let { src, onIconClick, notWin } = this.props;
     let marginLeft = notWin ? 'auto' : '6px';
@@ -18,15 +23,10 @@ class Icon extends React.Component {
         src={src}
         alt='app-icon'
         onClick={onIconClick}
-        style={{...styles.Icon, marginLeft}}
+        style={{ ...styles.Icon, marginLeft }}
       />
     );
   }
 }
-
-Icon.defaultProps = {
-  src: PropTypes.string,
-  onIconClick: PropTypes.func
-};
 
 export default Icon;

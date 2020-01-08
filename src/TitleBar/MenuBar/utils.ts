@@ -1,4 +1,4 @@
-import os from 'os';
+import * as os from 'os';
 
 const modifiers = [
   'CommandOrControl',
@@ -9,7 +9,7 @@ const CTRL = 'Ctrl';
 
 const topologicalSort = (original, graph) => {
   // Sort items topologically using a depth-first approach
-  const sorted = [];
+  const sorted: any[] = [];
   const visited = new Set();
 
   const visit = (mark) => {

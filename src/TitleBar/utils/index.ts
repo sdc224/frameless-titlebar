@@ -1,10 +1,10 @@
 import isEqual from 'lodash.isequal';
 
-export const debounce = (func, wait, immediate) => {
+export const debounce = (func, wait, immediate?) => {
   var timeout;
-  return function() {
+  return function () {
     var context = this, args = arguments;
-    var later = function() {
+    var later = function () {
       if (!immediate) func.apply(context, args);
     };
     var callNow = immediate && !timeout;
@@ -57,7 +57,7 @@ export const defaultMenuItem = {
   accelerator: '',
   position: '',
   submenu: [],
-  click: () => {}
+  click: () => { }
 };
 
 export const darkTheme = {

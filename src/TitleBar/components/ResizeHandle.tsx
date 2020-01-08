@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 
 const styles = {
   ResizeHandle: {
@@ -7,17 +6,23 @@ const styles = {
     top: 0,
     left: 0,
     WebkitAppRegion: 'no-drag'
-  },
+  } as any,
   ResizeLeft: {
     width: '3px',
-  },
+  } as any,
   ResizeTop: {
     width: '100%',
     height: '3px'
-  }
+  } as any
 };
 
-class ResizeHandle extends React.Component {
+type Props = {
+  left?: boolean,
+  top?: boolean,
+  height?: any
+}
+
+class ResizeHandle extends React.Component<Props> {
   render() {
     const { height, left } = this.props;
     return (
@@ -27,10 +32,5 @@ class ResizeHandle extends React.Component {
     );
   }
 }
-
-ResizeHandle.defaultProps = {
-  left: PropTypes.bool,
-  top: PropTypes.bool
-};
 
 export default ResizeHandle;

@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import styles from './styles.css';
+import * as React from 'react';
+// import styles from './styles.css';
+const styles = require('./styles.css');
 
 const style = {
   Container: {
@@ -14,11 +15,11 @@ const style = {
     transition: 'background-color 0.25s ease',
     opacity: 0.5,
     boxSizing: 'content-box',
-  },
+  } as any,
   WindowsContainer: {
     width: '46px',
     height: '100%'
-  },
+  } as any,
   LinuxContainer: {
     marginRight: '5px',
     width: '16px',
@@ -27,10 +28,25 @@ const style = {
     justifyContent: 'center',
     alignContent: 'center',
     borderRadius: '50%'
-  }
+  } as any
 }
 
-class Button extends Component {
+type Props = {
+  ariaLabel?: string,
+  tabIndex: number,
+  disabled: boolean,
+  close?: any,
+  onClick: any,
+  theme: any,
+  isWin: boolean
+}
+
+type State = {
+  hovering: boolean,
+  focused: boolean
+}
+
+class Button extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {

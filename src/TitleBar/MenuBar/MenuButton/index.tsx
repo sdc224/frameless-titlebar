@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import css from './styles.css';
+import * as React from 'react';
+const css = require('./styles.css');
 
 const styles = {
   Wrapper: {
@@ -9,17 +8,17 @@ const styles = {
     height: '100%',
     boxSizing: 'content-box',
     outline: 'none'
-  },
+  } as any,
   Label: {
     whiteSpace: 'nowrap',
     maxWidth: 100,
     textOverflow: 'ellipsis',
     overflow: 'hidden'
-  },
+  } as any,
   ButtonWrapper: {
     width: '100%',
     height: '100%'
-  },
+  } as any,
   Button: {
     WebkitAppearance: 'none',
     border: 'none',
@@ -35,10 +34,44 @@ const styles = {
     paddingLeft: 10,
     paddingRight: 10,
     boxSizing: 'border-box',
-  }
+  } as any
 };
 
-export default class MenuButton extends Component {
+type Props = {
+  onMouseEnter: () => void,
+  onMouseLeave: () => void,
+  onMouseOver: () => void,
+  onMouseMove: () => void,
+  onTouchStart: () => void,
+  onFocus: () => void,
+  onClick: () => void,
+  label?:
+  string | React.ReactNode,
+  open: boolean,
+  enabled: boolean,
+  hovering: boolean,
+  rectRef: any,
+  theme: any,
+  style?: object
+}
+
+export default class MenuButton extends React.Component<Props> {
+  static defaultProps = {
+    open: false,
+    closed: false,
+    hovering: false,
+    enabled: true,
+    onMouseEnter: () => { },
+    onMouseLeave: () => { },
+    onMouseOver: () => { },
+    onMouseMove: () => { },
+    onTouchStart: () => { },
+    onFocus: () => { },
+    onClick: () => { },
+    rectRef: () => { },
+    style: {}
+  }
+
   render() {
     const {
       onMouseEnter,
@@ -63,7 +96,7 @@ export default class MenuButton extends Component {
 
     return (
       <div
-        style={{...styles.Wrapper, ...this.props.style}}
+        style={{ ...styles.Wrapper, ...this.props.style }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onMouseOver={onMouseOver}
@@ -72,7 +105,7 @@ export default class MenuButton extends Component {
         onFocus={onFocus}
         onClick={onClick}
         ref={rectRef}
-        tabIndex="-1"
+        tabIndex={-1}
         aria-haspopup={true}
       >
         {this.props.children}
@@ -87,7 +120,7 @@ export default class MenuButton extends Component {
               borderColor,
               color
             }}
-            tabIndex="-1"
+            tabIndex={-1}
           >
             <div
               style={{
@@ -109,38 +142,3 @@ export default class MenuButton extends Component {
     );
   }
 }
-
-MenuButton.propTypes = {
-  children: PropTypes.node,
-  enabled: PropTypes.bool,
-  label: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node,
-  ]).isRequired,
-  open: PropTypes.bool,
-  closed: PropTypes.bool,
-  hovering: PropTypes.bool,
-  onMouseEnter: PropTypes.func,
-  onMouseLeave: PropTypes.func,
-  onMouseOver: PropTypes.func,
-  onMouseMove: PropTypes.func,
-  onTouchStart: PropTypes.func,
-  onFocus: PropTypes.func,
-  onClick: PropTypes.func,
-  rectRef: PropTypes.func
-};
-
-MenuButton.defaultProps = {
-  open: false,
-  closed: false,
-  hovering: false,
-  enabled: true,
-  onMouseEnter: () => {},
-  onMouseLeave: () => {},
-  onMouseOver: () => {},
-  onMouseMove: () => {},
-  onTouchStart: () => {},
-  onFocus: () => {},
-  onClick: () => {},
-  rectRef: () => {}
-};

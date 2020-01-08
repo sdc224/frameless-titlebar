@@ -1,20 +1,62 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { darkTheme, lightTheme } from './Theme';
-import electron from 'electron';
-import os from 'os';
-import MenuBar from './MenuBar';
-import WindowControls from './WindowControls';
+import * as React from 'react';
+import { darkTheme, lightTheme } from './Theme/index';
+import * as electron from 'electron';
+import * as os from 'os';
+import MenuBar from './MenuBar/index';
+import WindowControls from './WindowControls/index';
 import {
   Bar,
   Title,
   ResizeHandle,
   Icon
-} from './components';
+} from './components/index';
 
 const currentWindow = electron.remote.getCurrentWindow();
 
-class TitleBar extends Component {
+type Props = {
+  theme: any,
+  platform: string
+}
+
+type State = {
+  inActive: any
+}
+
+type PlatformChildrenProps = {
+  icon?: string,
+  app?: any,
+  title?: string,
+  platform: string,
+  menu?: any,
+  children?: any,
+  currentTheme?: any,
+  disableMaximize?: boolean,
+  disableMinimize?: boolean,
+  windowActions?: any,
+  inActive?: any,
+}
+
+class TitleBar extends React.Component<Props, State> {
+  private Menu: any;
+
+  static defaultProps = {
+    children: null,
+
+    /* Main */
+    icon: '',
+    name: '',
+    title: '',
+    platform: '',
+    theme: {},
+
+    /* WindowControls */
+    disableMinimize: false,
+    disableMaximize: false,
+
+    /* Menu */
+    menu: []
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -71,7 +113,7 @@ class TitleBar extends Component {
     disableMinimize,
     windowActions,
     inActive,
-  }) {
+  }: PlatformChildrenProps) {
 
     if (platform === 'darwin') {
       return (
@@ -104,7 +146,7 @@ class TitleBar extends Component {
 
     if (currentTheme.menuStyle === 'stacked') {
       return (
-        <Fragment>
+        <React.Fragment>
           <Bar
             isWin
             inActive={inActive}
@@ -174,7 +216,7 @@ class TitleBar extends Component {
               menu={menu}
             />
           </Bar>
-        </Fragment>
+        </React.Fragment>
       );
     }
 
@@ -198,12 +240,12 @@ class TitleBar extends Component {
         }
         {
           currentTheme.menuStyle === 'vertical' &&
-            <MenuBar
-              ref={r => { this.Menu = r; }}
-              theme={currentTheme}
-              inActive={inActive}
-              menu={menu}
-            />
+          <MenuBar
+            ref={r => { this.Menu = r; }}
+            theme={currentTheme}
+            inActive={inActive}
+            menu={menu}
+          />
         }
         {
           icon &&
@@ -224,12 +266,12 @@ class TitleBar extends Component {
         }
         {
           currentTheme.menuStyle === 'horizontal' &&
-            <MenuBar
-              ref={r => { this.Menu = r; }}
-              theme={currentTheme}
-              inActive={inActive}
-              menu={menu}
-            />
+          <MenuBar
+            ref={r => { this.Menu = r; }}
+            theme={currentTheme}
+            inActive={inActive}
+            menu={menu}
+          />
         }
         {
           title &&
@@ -280,36 +322,5 @@ class TitleBar extends Component {
     });
   }
 }
-
-TitleBar.propTypes = {
-  children: PropTypes.node,
-  icon: PropTypes.string,
-  title: PropTypes.string,
-  platform: PropTypes.string,
-  theme: PropTypes.object,
-  /* Menu */
-  menu: PropTypes.array,
-  /* Window */
-  disableMinimize: PropTypes.bool,
-  disableMaximize: PropTypes.bool
-};
-
-TitleBar.defaultProps = {
-  children: null,
-
-  /* Main */
-  icon: '',
-  name: '',
-  title: '',
-  platform: '',
-  theme: {},
-
-  /* WindowControls */
-  disableMinimize: false,
-  disableMaximize: false,
-
-  /* Menu */
-  menu: []
-};
 
 export default TitleBar;

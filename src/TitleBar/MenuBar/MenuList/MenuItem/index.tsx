@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { remote } from 'electron';
-import css from './styles.css';
+import * as React from 'react';
+import * as electron from 'electron';
+const css = require('./styles.css');
 import { parseAccelerator } from '../../utils';
 import { checked, unchecked, radioChecked, radioUnchecked, arrow } from '../../../utils/icons';
 
@@ -13,7 +12,7 @@ const styles = {
     transform: 'none',
     display: 'flex',
     cursor: 'default',
-  },
+  } as any,
   Wrapper: {
     fontSize: 12,
     padding: '0px 10px',
@@ -25,7 +24,7 @@ const styles = {
     position: 'relative',
     textDecoration: 'none',
     cursor: 'default',
-  },
+  } as any,
   Label: {
     flexGrow: 1,
     marginLeft: 10,
@@ -35,27 +34,72 @@ const styles = {
     whiteSpace: 'nowrap',
     cursor: 'default',
     pointerEvents: 'none',
-  },
+  } as any,
   Accelerator: {
     flexShrink: 0,
     marginRight: 10
-  },
+  } as any,
   Separator: {
     display: 'block',
     width: '100%',
     border: 'none',
     height: 1
-  },
+  } as any,
   Icon: {
     width: '100%',
     height: '100%',
     backgroundSize: 'contain',
     backgroundPosition: 'center'
-  }
+  } as any
 }
 
-class MenuItem extends Component {
-  constructor(props) {
+type Props = {
+  menuItem: {
+    label: string,
+    enabled: boolean,
+    checked: boolean,
+    visible: boolean,
+    type:
+    'normal' |
+    'separator' |
+    'submenu' |
+    'checkbox' |
+    'radio',
+    click: any,
+    icon: string,
+    accelerator: any
+  },
+  changeCheckState?: any,
+  path?: any,
+  indx?: number,
+  menuRef?: any,
+  theme: any,
+  rectRef?: any,
+  menu?: any
+}
+
+type State = {
+  hovering: boolean
+}
+
+class MenuItem extends React.Component<Props, State> {
+  static defaultProps = {
+    menuItem: {
+      id: '',
+      enabled: true,
+      label: '',
+      checked: false,
+      visible: true,
+      type: 'normal',
+      accelerator: '',
+      position: ''
+    },
+    children: null,
+    indx: 0,
+    changeCheckState: () => { }
+  }
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       hovering: false
@@ -111,7 +155,7 @@ class MenuItem extends Component {
     switch (menuItem.type) {
       case 'submenu': {
         // stop propagation only when initial target is this item specifically
-        // e.stopPropagation(); 
+        // e.stopPropagation();
         break;
       }
       case 'checkbox': {
@@ -120,7 +164,7 @@ class MenuItem extends Component {
           ...menuItem,
           checked: !menuItem.checked
         };
-        menuItem.click(newMenuItem, remote.getCurrentWindow(), { ...e, menuBar: this.props.menuRef });
+        menuItem.click(newMenuItem, electron.remote.getCurrentWindow(), { ...e, menuBar: this.props.menuRef });
         // TODO: Change Checked State
         changeCheckState(path, indx, !menuItem.checked);
         break;
@@ -131,7 +175,7 @@ class MenuItem extends Component {
           ...menuItem,
           checked: true
         };
-        menuItem.click(newMenuItem, remote.getCurrentWindow(), { ...e, menuBar: this.props.menuRef });
+        menuItem.click(newMenuItem, electron.remote.getCurrentWindow(), { ...e, menuBar: this.props.menuRef });
         if (!menuItem.checked) {
           // TODO: Change Checked State
           changeCheckState(path, indx, true, true);
@@ -140,7 +184,7 @@ class MenuItem extends Component {
       }
       default:
         e.persist();
-        menuItem.click(this.props.menuItem, remote.getCurrentWindow(), { ...e, menuBar: this.props.menuRef });
+        menuItem.click(this.props.menuItem, electron.remote.getCurrentWindow(), { ...e, menuBar: this.props.menuRef });
         break;
     }
   }
@@ -194,7 +238,7 @@ class MenuItem extends Component {
       <li
         ref={this.props.rectRef}
         style={{
-          ...styles.Contianer,
+          ...styles.Container,
           color: hovering ? theme.menuTextHighlightColor : '',
           opacity: menuItem.enabled ? '1' : '0.3',
           backgroundColor: hovering ? theme.menuHighlightColor : ''
@@ -204,7 +248,7 @@ class MenuItem extends Component {
         onClick={this._handleClick}
         role="option"
       >
-        <a style={{...styles.Wrapper, height: theme.menuItemHeight}}>
+        <a style={{ ...styles.Wrapper, height: theme.menuItemHeight }}>
           <div
             className={css.StatusIcon}
             style={{
@@ -238,41 +282,5 @@ class MenuItem extends Component {
     );
   }
 }
-
-MenuItem.propTypes = {
-  menuItem: PropTypes.shape({
-    label: PropTypes.string,
-    enabled: PropTypes.bool,
-    checked: PropTypes.bool,
-    visible: PropTypes.bool,
-    type: PropTypes.oneOf([
-      'normal',
-      'separator',
-      'submenu',
-      'checkbox',
-      'radio'
-    ]),
-    click: PropTypes.func
-  }),
-  children: PropTypes.node,
-  indx: PropTypes.number,
-  changeCheckState: PropTypes.func
-};
-
-MenuItem.defaultProps = {
-  menuItem: {
-    id: '',
-    enabled: true,
-    label: '',
-    checked: false,
-    visible: true,
-    type: 'normal',
-    accelerator: '',
-    position: ''
-  },
-  children: null,
-  indx: 0,
-  changeCheckState: () => {}
-};
 
 export default MenuItem;

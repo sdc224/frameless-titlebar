@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import electron from 'electron';
+import * as React from 'react';
+import * as electron from 'electron';
 import {
   Button
-} from '../components';
+} from '../components/index';
 import {
   MimimizeIcon,
   MaximizeIcon,
@@ -26,23 +25,40 @@ const styles = {
     alignItems: 'center',
     boxSizing: 'border-box',
     height: '100%',
-  },
+  } as any,
   ControlsContainer: {
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
     height: '100%',
     alignItems: 'center'
-  },
+  } as any,
   ActionsContainer: {
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
-  }
+  } as any
 }
 
-export default class WindowControls extends Component {
-  constructor(props) {
+type Props = {
+  disableMinimize: boolean
+  disableMaximize: boolean
+  theme: any
+  isWin: boolean
+  windowActions: any
+}
+
+type State = {
+  isMaximized: boolean
+}
+
+export default class WindowControls extends React.Component<Props, State> {
+  static defaultProps = {
+    disableMinimize: false,
+    disableMaximize: false
+  }
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       isMaximized: currentWindow.isMaximized()
@@ -121,7 +137,7 @@ export default class WindowControls extends Component {
     const { isMaximized } = this.state;
 
     return (
-      <div style={{...styles.Container, marginLeft: (isWin || (!isWin && theme.controlsLayout) === 'right') ? 'auto' : 0}}>
+      <div style={{ ...styles.Container, marginLeft: (isWin || (!isWin && theme.controlsLayout) === 'right') ? 'auto' : 0 }}>
         {
           this.props.windowActions && (
             <div style={styles.ActionsContainer}>
@@ -134,7 +150,7 @@ export default class WindowControls extends Component {
             theme={theme}
             key="min-button"
             ariaLabel="minimize"
-            tabIndex="-1"
+            tabIndex={-1}
             disabled={!this.isMinimizable}
             onClick={this.onMinimizeClicked}
             isWin={isWin}
@@ -145,7 +161,7 @@ export default class WindowControls extends Component {
             theme={theme}
             key="max-button"
             ariaLabel="maximize"
-            tabIndex="-1"
+            tabIndex={-1}
             disabled={!this.isMaximizable}
             onClick={this.onMaximizeClicked}
             isWin={isWin}
@@ -158,7 +174,7 @@ export default class WindowControls extends Component {
             theme={theme}
             key="close-button"
             aria-label="close"
-            tabIndex="-1"
+            tabIndex={-1}
             disabled={false}
             onClick={this.onCloseClicked}
             isWin={isWin}
@@ -171,13 +187,3 @@ export default class WindowControls extends Component {
     );
   }
 }
-
-WindowControls.propTypes = {
-  disableMinimize: PropTypes.bool,
-  disableMaximize: PropTypes.bool
-};
-
-WindowControls.defaultProps = {
-  disableMinimize: false,
-  disableMaximize: false
-};

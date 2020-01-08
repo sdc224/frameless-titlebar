@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import MenuButton from './MenuButton';
-import MenuList from './MenuList';
+import * as React from 'react';
+import MenuButton from './MenuButton/index';
+import MenuList from './MenuList/index';
 import { reduxSet, getProperty, debounce } from '../utils';
 import { buildMenu, getMenuItemPathById } from './utils';
 import { MenuIcon } from '../utils/icons';
@@ -15,11 +14,35 @@ const styles = {
     flexWrap: 'wrap',
     flexShrink: 1,
     boxSizing: 'border-box'
-  }
+  } as any
 };
 
-class MenuBar extends Component {
-  constructor(props) {
+type Props = {
+  inActive: boolean,
+  menu: any;
+  theme: any;
+}
+
+type State = {
+  hovering: number,
+  focusing: number,
+  clicked: boolean,
+  menu: any,
+  overflowMenu: Array<any>,
+  overflowIndex: number
+}
+
+class MenuBar extends React.Component<Props, State> {
+  private numMenusShown: number;
+  private menuItems: any;
+  private resizeDebounce: any;
+  private lock: boolean = false;
+  private menuBar: any;
+  private overflowMenu: any;
+  private overflowIndex: any;
+  private overflowButtonRef: any;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       hovering: -1,
@@ -52,7 +75,7 @@ class MenuBar extends Component {
     window.addEventListener('resize', this.resizeDebounce);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     window.removeEventListener('resize', this.resizeDebounce);
   }
 
@@ -161,23 +184,23 @@ class MenuBar extends Component {
   }
 
   get menuBarHeight() {
-		return this.menuBar.clientHeight;
+    return this.menuBar.clientHeight;
   }
 
   get hasOverflow() {
     return this.numMenusShown < this.menuItems.length;
   }
 
-	get getWidth() {
-		if (this.menuItems) {
-			const left = this.menuItems[0].buttonElement.getBoundingClientRect().left;
-			const right = this.hasOverflow ? this.overflowMenu.buttonElement.getBoundingClientRect().right : this.menuItems[this.menuItems.length - 1].getBoundingClientRect().right;
-			return right - left;
+  get getWidth() {
+    if (this.menuItems) {
+      const left = this.menuItems[0].buttonElement.getBoundingClientRect().left;
+      const right = this.hasOverflow ? this.overflowMenu.buttonElement.getBoundingClientRect().right : this.menuItems[this.menuItems.length - 1].getBoundingClientRect().right;
+      return right - left;
     }
-    
-		return 0;
+
+    return 0;
   }
-  
+
   get getOverflowIndex() {
     return this.hasOverflow ? this.overflowIndex : this.menuItems.length - 1;
   }
@@ -223,13 +246,13 @@ class MenuBar extends Component {
       // we have overflow
       if (full) {
         // remove buttons until we can fit the more button
-        while(currentSize + this.overflowButtonRef.offsetWidth > availableSize && this.numMenusShown > 0) {
-            this.numMenusShown -= 1;
-            const size = this.menuItems[this.numMenusShown].offsetWidth;
-            this.menuItems[this.numMenusShown].style.visibility = 'hidden';
-            currentSize -= size;
+        while (currentSize + this.overflowButtonRef.offsetWidth > availableSize && this.numMenusShown > 0) {
+          this.numMenusShown -= 1;
+          const size = this.menuItems[this.numMenusShown].offsetWidth;
+          this.menuItems[this.numMenusShown].style.visibility = 'hidden';
+          currentSize -= size;
         }
-  
+
         // update overflow menu
         this.setState({
           overflowMenu: [...this.state.menu.slice(this.numMenusShown, this.state.menu.length)],
@@ -244,7 +267,7 @@ class MenuBar extends Component {
     });
   }
 
-  _generateHorizontalMenu(menuObj = []) {
+  _generateHorizontalMenu(menuObj: any = []) {
     const { overflowIndex, overflowMenu } = this.state;
     const menuList = menuObj.map((menuItem, i) => {
       return (
@@ -288,15 +311,15 @@ class MenuBar extends Component {
         >
           {
             (this.state.clicked && i === this.state.focusing) &&
-              <MenuList
-                menuRef={this}
-                changeCheckState={this._changeCheckState}
-                theme={this.props.theme}
-                parentRef={this.menuItems[i]}
-                submenu={menuItem.submenu}
-                mainIndex={i}
-                path={['menu', i]}
-              />
+            <MenuList
+              menuRef={this}
+              changeCheckState={this._changeCheckState}
+              theme={this.props.theme}
+              parentRef={this.menuItems[i]}
+              submenu={menuItem.submenu}
+              mainIndex={i}
+              path={['menu', i]}
+            />
           }
         </MenuButton>
       );
@@ -333,20 +356,20 @@ class MenuBar extends Component {
         hovering={overflowIndex === this.state.hovering}
         open={this.state.clicked && overflowIndex === this.state.focusing}
         closed={!this.state.clicked || overflowIndex !== this.state.focusing}
-        style={{visibility: this.hasOverflow ? 'visible' : 'hidden'}}
+        style={{ visibility: this.hasOverflow ? 'visible' : 'hidden' }}
         theme={this.props.theme}
       >
         {
           (this.state.clicked && overflowIndex === this.state.focusing) &&
-            <MenuList
-              menuRef={this}
-              changeCheckState={this._changeCheckState}
-              parentRef={this.overflowButtonRef}
-              submenu={overflowMenu}
-              theme={this.props.theme}
-              path={['menu']}
-              vertical
-            />
+          <MenuList
+            menuRef={this}
+            changeCheckState={this._changeCheckState}
+            parentRef={this.overflowButtonRef}
+            submenu={overflowMenu}
+            theme={this.props.theme}
+            path={['menu']}
+            vertical
+          />
         }
       </MenuButton>
     ));
@@ -392,15 +415,15 @@ class MenuBar extends Component {
       >
         {
           (this.state.clicked && this.state.focusing === 0) &&
-            <MenuList
-              menuRef={this}
-              changeCheckState={this._changeCheckState}
-              parentRef={this.menuItems[0]}
-              theme={this.props.theme}
-              submenu={menuList}
-              path={['menu']}
-              vertical
-            />
+          <MenuList
+            menuRef={this}
+            changeCheckState={this._changeCheckState}
+            parentRef={this.menuItems[0]}
+            theme={this.props.theme}
+            submenu={menuList}
+            path={['menu']}
+            vertical
+          />
         }
       </MenuButton>
     );
@@ -426,14 +449,5 @@ class MenuBar extends Component {
     );
   }
 }
-
-MenuBar.propTypes = {
-  menu: PropTypes.array,
-  inActive: PropTypes.bool
-};
-
-MenuBar.defaultProps = {
-  menu: []
-};
 
 export default MenuBar;

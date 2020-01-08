@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 const styles = {
   Title: {
@@ -7,10 +7,18 @@ const styles = {
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
-  }
+  } as any
 };
 
-class Title extends React.Component {
+type Props = {
+  theme: any,
+  isWin?: boolean,
+  flex?: string,
+  inActive: boolean,
+  align: string
+}
+
+class Title extends React.Component<Props> {
   render() {
     let { theme, isWin, children, flex, inActive, align } = this.props;
     let lineHeight = isWin ? theme.winBarHeight : theme.barHeight;
